@@ -1,16 +1,20 @@
-## Hi there 👋
+# 🐝 ResiBee
 
-<!--
-**resibee/resibee** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+Smart Reservation Platform
 
-Here are some ideas to get you started:
+## Welcome
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+ResiBee helps customers check availability and submit reservation requests quickly and easily.
+
+### Features
+
+- Availability Checking
+- Reservation Requests
+- Google Calendar Integration
+- Approval Workflow
+
+### Coming Soon
+
+- Availability Calendar
+- Messenger Integration
+- Real-Time Date Availability
