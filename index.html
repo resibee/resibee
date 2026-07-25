@@ -245,42 +245,23 @@ textarea{
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <script>
-const CACHE_KEY = "availabilityData";
-const CACHE_TIME_KEY = "availabilityTimestamp";
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+fetch("https://resibee.app.n8n.cloud/webhook/availability")
+.then(response => response.json())
+.then(data => {
 
-const cachedData = localStorage.getItem(CACHE_KEY);
-const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
+    const bookedDates = data.occupiedDates;
 
-const now = Date.now();
-
-if (
-  cachedData &&
-  cachedTime &&
-  now - Number(cachedTime) < CACHE_DURATION
-) {
-  console.log("Using cached availability");
-  const data = JSON.parse(cachedData);
-
-  // Your existing display logic here
-  displayAvailability(data);
-
-} else {
-  console.log("Fetching fresh availability");
-
-  fetch("https://resibee.app.n8n.cloud/webhook/availability")
-    .then(response => response.json())
-    .then(data => {
-      localStorage.setItem(CACHE_KEY, JSON.stringify(data));
-      localStorage.setItem(CACHE_TIME_KEY, now);
-
-      // Your existing display logic here
-      displayAvailability(data);
-    })
-    .catch(error => {
-      console.error("Availability fetch failed:", error);
+    flatpickr("#arrival", {
+        minDate: "today",
+        disable: bookedDates,
+        dateFormat: "m/d/Y"
     });
-}
+
+    flatpickr("#departure", {
+        minDate: "today",
+        disable: bookedDates,
+        dateFormat: "m/d/Y"
+    });
 
 })
 .catch(error => {
