@@ -2,34 +2,65 @@
 <html>
 <head>
     <title>ResiBee</title>
+
+    https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            text-align: center;
+        }
+
+        h1 {
+            color: #f4b400;
+        }
+
+        .calendar-box {
+            margin-top: 30px;
+        }
+
+        input {
+            padding: 12px;
+            width: 250px;
+            font-size: 16px;
+        }
+
+        .legend {
+            margin-top: 20px;
+        }
+
+        .legend span {
+            margin: 0 10px;
+        }
+    </style>
 </head>
+
 <body>
+
     <h1>🐝 ResiBee</h1>
 
-    <p>Smart Reservation Platform</p>
+    <h2>Know Availability Before You Book</h2>
 
-    <h2>Welcome</h2>
+    <p>Select your dates below.</p>
 
-    <p>
-        ResiBee helps customers check availability and submit
-        reservation requests quickly and easily.
-    </p>
+    <div class="calendar-box">
+        <input id="datepicker" placeholder="Select a date">
+    </div>
 
-    <h2>Features</h2>
+    <div class="legend">
+        <span>🟢 Available</span>
+        <span>🔴 Booked</span>
+    </div>
 
-    <ul>
-        <li>Availability Checking</li>
-        <li>Reservation Requests</li>
-        <li>Google Calendar Integration</li>
-        <li>Approval Workflow</li>
-    </ul>
+    /flatpickr"></script>
 
-    <h2>Coming Soon</h2>
+    <script>
+        flatpickr("#datepicker", {
+            inline: true
+        });
+    </script>
 
-    <ul>
-        <li>Availability Calendar</li>
-        <li>Messenger Integration</li>
-        <li>Real-Time Date Availability</li>
-    </ul>
 </body>
 </html>
