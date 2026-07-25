@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ResiBee Booking</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial, Helvetica, sans-serif;
+    background:#f3f4f6;
+    padding:40px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+}
+
+.header{
+    text-align:center;
+    margin-bottom:40px;
+}
+
+.header h1{
+    font-size:42px;
+    color:#1e3a8a;
+    margin-bottom:10px;
+}
+
+.header p{
+    color:#666;
+}
+
+.booking-section{
+    display:flex;
+    gap:30px;
+}
+
+.info-card{
+    width:300px;
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    height:fit-content;
+}
+
+.info-card h3{
+    color:#1e3a8a;
+    margin-bottom:20px;
+}
+
+.info-card p{
+    margin-bottom:15px;
+    color:#555;
+}
+
+.form-card{
+    flex:1;
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+}
+
+.row{
+    display:flex;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.field{
+    flex:1;
+}
+
+label{
+    display:block;
+    font-weight:bold;
+    margin-bottom:8px;
+    color:#333;
+}
+
+input,
+select,
+textarea{
+    width:100%;
+    padding:12px;
+    border:1px solid #d1d5db;
+    border-radius:8px;
+    font-size:14px;
+}
+
+textarea{
+    min-height:140px;
+    resize:vertical;
+}
+
+.submit-btn{
+    width:100%;
+    padding:16px;
+    background:#2563eb;
+    color:white;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.submit-btn:hover{
+    background:#1d4ed8;
+}
+
+@media(max-width:768px){
+
+    .booking-section{
+        flex-direction:column;
+    }
+
+    .info-card{
+        width:100%;
+    }
+
+    .row{
+        flex-direction:column;
+    }
+
+}
+
+.flatpickr-day.flatpickr-disabled {
+    color: #b91c1c !important;
+    background-color: #fef2f2 !important;
+    border-radius: 4px;
+}
+
+.flatpickr-day.selected {
+    background: #2563eb !important;
+    border-color: #2563eb !important;
+}
+
+.flatpickr-day.today {
+    border-color: #2563eb !important;
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>🐝 ResiBee</h1>
+        <p>Real-time availability for hassle-free booking.</p>
+    </div>
+
+    <div class="booking-section">
+
+        <div class="info-card">
+
+            <h3>Reservation Information</h3>
+
+            <p>✅ Select Available Dates</p>
+
+            <p>❌ Unavailable Dates Cannot Be Booked</p>
+
+            <p>📅 Check Availability Before Booking</p>
+
+            <hr style="margin:20px 0;">
+
+            <p>
+                Choose your preferred stay dates to continue.
+            </p>
+
+        </div>
+
+        <div class="form-card">
+
+            <div class="row">
+
+                <div class="field">
+                    <label>Arrival Date</label>
+                    <input type="text" id="arrival" placeholder="mm/dd/yyyy">
+                </div>
+
+                <div class="field">
+                    <label>Departure Date</label>
+                    <input type="text" id="departure" placeholder="mm/dd/yyyy">
+                </div>
+
+                <div class="field">
+                    <label>Guests</label>
+
+                   <select id="guests">
+                        <option>1</option>
+                        <option selected>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                    </select>
+                </div>
+
+</div>
+
+
+<div class="field" style="margin-bottom:20px;">
+    <label>Full Name</label>
+    <input type="text" id="guestName">
+</div>
+
+<div class="row">
+
+    <div class="field">
+        <label>Phone Number</label>
+        <input type="text" id="phone">
+    </div>
+
+    <div class="field">
+        <label>Email</label>
+        <input type="email" id="email">
+    </div>
+
+</div>
+            <div class="field" style="margin-bottom:20px;">
+                <label>Special Requests</label>
+                <textarea id="specialRequests"></textarea>
+            </div>
+
+            <button class="submit-btn" id="submitBtn">
+                Send Inquiry
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<script>
+fetch("https://resibee.app.n8n.cloud/webhook/availability")
+.then(response => response.json())
+.then(data => {
+
+    const bookedDates = data.occupiedDates;
+
+    flatpickr("#arrival", {
+        minDate: "today",
+        disable: bookedDates,
+        dateFormat: "m/d/Y"
+    });
+
+    flatpickr("#departure", {
+        minDate: "today",
+        disable: bookedDates,
+        dateFormat: "m/d/Y"
+    });
+
+})
+.catch(error => {
+    console.error("Availability API Error:", error);
+});
+</script>
+
+<script>
+document
+.getElementById("submitBtn")
+.addEventListener("click", async () => {
+
+const payload = {
+    "Guest Name": document.getElementById("guestName").value,
+    "Phone Number": document.getElementById("phone").value,
+    "Email": document.getElementById("email").value,
+    "Check-In Date": document.getElementById("arrival").value,
+    "Check-Out Date": document.getElementById("departure").value,
+    "Number of Guests": document.getElementById("guests").value
+};
+    try {
+
+        await fetch(
+            "https://resibee.app.n8n.cloud/webhook-test/booking-request",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            }
+        );
+
+        alert("Booking request sent!");
+
+    } catch (error) {
+        console.error(error);
+        alert("Error sending booking request.");
+    }
+
+});
+</script>
+
+
+</body>
+</html>
