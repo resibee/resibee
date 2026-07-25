@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ResiBee Booking</title>
 
+/dist/flatpickr.min.css">
+
 <style>
 *{
     margin:0;
@@ -145,23 +147,23 @@ textarea{
 
     <div class="booking-section">
 
-    <div class="info-card">
+        <div class="info-card">
 
-    <h3>Reservation Information</h3>
+            <h3>Reservation Information</h3>
 
-    <p>✅ Select Available Dates</p>
+            <p>✅ Select Available Dates</p>
 
-    <p>❌ Unavailable Dates Cannot Be Booked</p>
+            <p>❌ Unavailable Dates Cannot Be Booked</p>
 
-    <p>📅 Check Availability Before Booking</p>
+            <p>📅 Check Availability Before Booking</p>
 
-    <hr style="margin:20px 0;">
+            <hr style="margin:20px 0;">
 
-    <p>
-        Choose your preferred stay dates to continue.
-    </p>
+            <p>
+                Choose your preferred stay dates to continue.
+            </p>
 
-</div>
+        </div>
 
         <div class="form-card">
 
@@ -169,12 +171,12 @@ textarea{
 
                 <div class="field">
                     <label>Arrival Date</label>
-                    <input type="date">
+                    <input type="text" id="arrival">
                 </div>
 
                 <div class="field">
                     <label>Departure Date</label>
-                    <input type="date">
+                    <input type="text" id="departure">
                 </div>
 
                 <div class="field">
@@ -224,6 +226,33 @@ textarea{
     </div>
 
 </div>
+
+https://cdn.jsdelivr.net/npm/flatpickr
+
+<script>
+fetch("https://resibee.app.n8n.cloud/webhook/availability")
+.then(response => response.json())
+.then(data => {
+
+    const bookedDates = data.occupiedDates;
+
+    flatpickr("#arrival", {
+        minDate: "today",
+        disable: bookedDates,
+        dateFormat: "Y-m-d"
+    });
+
+    flatpickr("#departure", {
+        minDate: "today",
+        disable: bookedDates,
+        dateFormat: "Y-m-d"
+    });
+
+})
+.catch(error => {
+    console.error("Availability API Error:", error);
+});
+</script>
 
 </body>
 </html>
