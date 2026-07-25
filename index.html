@@ -296,7 +296,15 @@ const payload = {
             }
         );
 
-        alert("Booking request sent!");
+        alert("✅ Booking request sent!");
+
+document.getElementById("arrival").value = "";
+document.getElementById("departure").value = "";
+document.getElementById("guests").value = "2";
+document.getElementById("guestName").value = "";
+document.getElementById("phone").value = "";
+document.getElementById("email").value = "";
+document.getElementById("specialRequests").value = "";
 
     } catch (error) {
     console.error(error);
