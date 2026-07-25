@@ -198,7 +198,7 @@ textarea{
                 <div class="field">
                     <label>Guests</label>
 
-                    <select>
+                   <select id="guests">
                         <option>1</option>
                         <option selected>2</option>
                         <option>3</option>
@@ -209,6 +209,13 @@ textarea{
 
 </div>
 
+
+<div class="field" style="margin-bottom:20px;">
+    <label>Phone Number</label>
+    <input type="text" id="phone">
+</div>
+
+
 <div style="margin-bottom:20px;">
     
 </div>
@@ -217,22 +224,22 @@ textarea{
 
     <div class="field">
         <label>Full Name</label>
-        <input type="text">
+        <input type="text" id="guestName">
     </div>
 
     <div class="field">
         <label>Email</label>
-        <input type="email">
+        <input type="email" id="email">
     </div>
 
 </div>
 
             <div class="field" style="margin-bottom:20px;">
                 <label>Special Requests</label>
-                <textarea></textarea>
+                <textarea id="specialRequests"></textarea>
             </div>
 
-            <button class="submit-btn">
+            <button class="submit-btn" id="submitBtn">
                 Send Inquiry
             </button>
 
@@ -245,28 +252,85 @@ textarea{
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <script>
-fetch("https://resibee.app.n8n.cloud/webhook/availability")
-.then(response => response.json())
-.then(data => {
+const CACHE_KEY = "availabilityData";
+const CACHE_TIME_KEY = "availabilityTimestamp";
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
-    const bookedDates = data.occupiedDates;
+const cachedData = localStorage.getItem(CACHE_KEY);
+const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
 
-    flatpickr("#arrival", {
-        minDate: "today",
-        disable: bookedDates,
-        dateFormat: "m/d/Y"
+const now = Date.now();
+
+if (
+  cachedData &&
+  cachedTime &&
+  now - Number(cachedTime) < CACHE_DURATION
+) {
+  console.log("Using cached availability");
+  const data = JSON.parse(cachedData);
+
+  // Your existing display logic here
+  displayAvailability(data);
+
+} else {
+  console.log("Fetching fresh availability");
+
+  fetch("https://resibee.app.n8n.cloud/webhook/availability")
+    .then(response => response.json())
+    .then(data => {
+      localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+      localStorage.setItem(CACHE_TIME_KEY, now);
+
+      // Your existing display logic here
+      displayAvailability(data);
+    })
+    .catch(error => {
+      console.error("Availability fetch failed:", error);
     });
-
-    flatpickr("#departure", {
-        minDate: "today",
-        disable: bookedDates,
-        dateFormat: "m/d/Y"
-    });
+}
 
 })
 .catch(error => {
     console.error("Availability API Error:", error);
 });
 </script>
+
+<script>
+document
+.getElementById("submitBtn")
+.addEventListener("click", async () => {
+
+    const payload = {
+        "Guest Name": document.getElementById("guestName").value,
+        "Phone Number": document.getElementById("phone").value,
+        "Check-In Date": document.getElementById("arrival").value,
+        "Check-Out Date": document.getElementById("departure").value,
+        "Number of Guests": document.getElementById("guests").value
+    };
+
+    try {
+
+        await fetch(
+            "https://resibee.app.n8n.cloud/webhook-test/booking-request",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            }
+        );
+
+        alert("Booking request sent!");
+
+    } catch (error) {
+        console.error(error);
+        alert("Error sending booking request.");
+    }
+
+});
+</script>
+
+
 </body>
 </html>
